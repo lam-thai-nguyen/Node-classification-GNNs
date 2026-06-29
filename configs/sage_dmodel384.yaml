@@ -1,0 +1,12 @@
+model: sage
+in_channels: 128
+out_channels: 40
+d_model: 384
+layers: 3
+dropout: 0.5
+aggr: mean
+optimizer: adam
+lr: 0.01
+epochs: 500
+best_checkpoint_dir: checkpoints/sage_dmodel384_best.pt
+checkpoint_dir: checkpoints/sage_dmodel384_last.pt

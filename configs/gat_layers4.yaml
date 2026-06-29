@@ -1,0 +1,12 @@
+model: gcn
+in_channels: 128
+out_channels: 40
+d_model: 128
+heads: 1
+layers: 4
+dropout: 0.5
+optimizer: adam
+lr: 0.01
+epochs: 500
+best_checkpoint_dir: checkpoints/gat_layers4_best.pt
+checkpoint_dir: checkpoints/gat_layers4_last.pt

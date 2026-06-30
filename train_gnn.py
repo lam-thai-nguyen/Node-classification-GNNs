@@ -26,7 +26,6 @@ def train(gnn, graph, split_idx, optimizer, loss_fn, epochs, best_checkpoint_dir
         None
     """
     gnn = gnn.to(DEVICE)
-    gnn.train()
     train_history = []
     val_history = []
     acc_history = []
@@ -36,6 +35,7 @@ def train(gnn, graph, split_idx, optimizer, loss_fn, epochs, best_checkpoint_dir
     valid_idx = split_idx["valid"]
     
     for i in range(epochs):
+        gnn.train()
         train_loss = 0.0
 
         # train

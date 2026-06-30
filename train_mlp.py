@@ -27,13 +27,13 @@ def train(mlp, x, y, split_idx, optimizer, loss_fn, epochs, best_checkpoint_dir,
         None
     """
     mlp = mlp.to(DEVICE)
-    mlp.train()
     train_history = []
     val_history = []
     acc_history = []
     best_val_loss = float("inf")
     
     for i in range(epochs):
+        mlp.train()
         train_loss = 0.0
 
         optimizer.zero_grad()

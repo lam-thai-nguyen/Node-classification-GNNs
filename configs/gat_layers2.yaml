@@ -1,4 +1,4 @@
-model: gcn
+model: gats
 in_channels: 128
 out_channels: 40
 d_model: 128

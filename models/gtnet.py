@@ -4,9 +4,6 @@ from torch_geometric.nn import MessagePassing
 
 
 class GTCNConv(MessagePassing):
-    """
-    GTCNConv from paper: GTNet: A Tree-Based Deep Graph Learning Architecture
-    """
     def __init__(self):
         super().__init__(aggr='add')
 
@@ -55,22 +52,19 @@ class GTCNConv(MessagePassing):
         return norm.view(-1, 1) * x_j
 
 class GTCN(nn.Module):
-    """
-    GTCN from paper: GTNet: A Tree-Based Deep Graph Learning Architecture
-    """
     def __init__(self, in_channels=128, out_channels=40, hidden_channels=256, num_layers=5, dropout=0.2):
         super().__init__()
-        self.mlp1 = nn.Linear(in_channels, hidden_channels, bias=False)
-        self.mlp2 = nn.Linear(hidden_channels, hidden_channels, bias=False)
+        self.mlp1 = nn.Linear(in_channels, hidden_channels)
+        self.mlp2 = nn.Linear(hidden_channels, hidden_channels)
         self.convs = nn.ModuleList([GTCNConv() for _ in range(num_layers)])
         self.bns = nn.ModuleList([nn.BatchNorm1d(hidden_channels) for _ in range(num_layers)])
-        self.classifier = nn.Linear(hidden_channels, out_channels, bias=False)
+        self.classifier = nn.Linear(hidden_channels, out_channels)
         self.relu = nn.ReLU(inplace=True)
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x, edge_index):
-        z = self.dropout(self.relu(self.mlp1(x)))
-        z = self.dropout(self.relu(self.mlp2(z)))
+        z = self.relu(self.mlp1(self.dropout(x)))
+        z = self.mlp2(self.dropout(z))
         h = z
         for conv, bn in zip(self.convs, self.bns):
             h = conv(h, z, edge_index)

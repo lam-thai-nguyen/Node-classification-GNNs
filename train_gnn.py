@@ -1,7 +1,7 @@
 import yaml
 import torch
 from ogb.nodeproppred import Evaluator
-from models import GCN, GraphSAGE, GAT
+from models import GCN, GraphSAGE, GAT, GTCN
 from utils import num_params, plot_history, load_dataset
 
 
@@ -150,7 +150,28 @@ def train_gat():
     acc_history = checkpoint["acc_history"]
     plot_history(train_history, val_history, acc_history)
 
+def train_gtcn():
+    data, split_idx = load_dataset(gnn=True)
+
+    # Select a config path only, other arguments are automatically derived
+    config_path = "configs/gtcn_baseline.yaml"
+    with open(config_path) as f:
+        cfg = yaml.safe_load(f)
+
+    gtcn = GTCN(cfg['in_channels'], cfg['out_channels'], cfg['d_model'], cfg['layers'], cfg['dropout'])
+    print("num params:", num_params(gtcn))
+    optimizer = torch.optim.Adam(gtcn.parameters(), lr=cfg['lr'], weight_decay=cfg['weight_decay'])
+    loss_fn = torch.nn.CrossEntropyLoss()
+    train(gtcn, data, split_idx, optimizer, loss_fn, cfg['epochs'], cfg['best_checkpoint_dir'], cfg['checkpoint_dir'])
+
+    checkpoint = torch.load(cfg['best_checkpoint_dir'], map_location=DEVICE)
+    train_history = checkpoint["train_history"]
+    val_history = checkpoint["val_history"]
+    acc_history = checkpoint["acc_history"]
+    plot_history(train_history, val_history, acc_history)
+
 if __name__ == "__main__":
     # train_gcn()
     # train_sage()
-    train_gat()
+    # train_gat()
+    train_gtcn()

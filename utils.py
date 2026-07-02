@@ -1,3 +1,5 @@
+import torch
+from sklearn.preprocessing import StandardScaler
 from ogb.nodeproppred import PygNodePropPredDataset
 from torch_geometric.utils import to_undirected
 import matplotlib.pyplot as plt
@@ -42,9 +44,13 @@ def load_dataset(gnn=False):
     dataset = PygNodePropPredDataset(name='ogbn-arxiv') 
 
     split_idx = dataset.get_idx_split()
-    graph = dataset[0]
+    data = dataset[0]
+
+    scaler = StandardScaler()
+    data.x = torch.from_numpy(scaler.fit_transform(data.x.numpy()))
 
     if gnn:
-        graph.edge_index = to_undirected(graph.edge_index)
+        data.edge_index = to_undirected(data.edge_index)
+        # skip removing self-loops because a citation network can't have self-loops
 
-    return graph, split_idx
+    return data, split_idx

@@ -115,13 +115,13 @@ def homophily(edge_index, y):
     print(f"Edge homophily: {same_label:.3f}")
 
 if __name__ == "__main__":
-    graph, split_idx = load_dataset()
+    data, split_idx = load_dataset()
 
-    edge_index = graph.edge_index.numpy()
-    x = graph.x.numpy()
-    y = graph.y.numpy().flatten()
-    node_year = graph.node_year.numpy().flatten()
-    num_nodes = graph.num_nodes
+    edge_index = data.edge_index.numpy()
+    x = data.x.numpy()
+    y = data.y.numpy().flatten()
+    node_year = data.node_year.numpy().flatten()
+    num_nodes = data.num_nodes
 
     # EDA
     degree_distribution(edge_index)

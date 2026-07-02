@@ -132,10 +132,10 @@ def accuracy(mlp, x, y, idx):
     return acc['acc']
 
 if __name__ == "__main__":
-    graph, split_idx = load_dataset()
+    data, split_idx = load_dataset()
 
     # Select a config path only, other arguments are automatically derived
-    config_path = "configs/mlp_dmodel384.yaml"
+    config_path = "configs/mlp_baseline.yaml"
     with open(config_path) as f:
         cfg = yaml.safe_load(f)
 
@@ -143,7 +143,7 @@ if __name__ == "__main__":
     print("num params:", num_params(mlp))
     optimizer = torch.optim.Adam(mlp.parameters(), lr=cfg['lr'])
     loss_fn = torch.nn.CrossEntropyLoss()
-    train(mlp, graph.x, graph.y, split_idx, optimizer, loss_fn, cfg['epochs'], cfg['best_checkpoint_dir'], cfg['checkpoint_dir'])
+    train(mlp, data.x, data.y, split_idx, optimizer, loss_fn, cfg['epochs'], cfg['best_checkpoint_dir'], cfg['checkpoint_dir'])
 
     checkpoint = torch.load(cfg['best_checkpoint_dir'], map_location=DEVICE)
     train_history = checkpoint["train_history"]

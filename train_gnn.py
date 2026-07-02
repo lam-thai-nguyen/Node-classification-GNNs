@@ -91,7 +91,7 @@ def train(gnn, graph, split_idx, optimizer, loss_fn, epochs, best_checkpoint_dir
     }, checkpoint_dir)
 
 def train_gcn():
-    graph, split_idx = load_dataset(gnn=True)
+    data, split_idx = load_dataset(gnn=True)
 
     # Select a config path only, other arguments are automatically derived
     config_path = "configs/gcn_baseline.yaml"
@@ -102,7 +102,7 @@ def train_gcn():
     print("num params:", num_params(gnn))
     optimizer = torch.optim.Adam(gnn.parameters(), lr=cfg['lr'])
     loss_fn = torch.nn.CrossEntropyLoss()
-    train(gnn, graph, split_idx, optimizer, loss_fn, cfg['epochs'], cfg['best_checkpoint_dir'], cfg['checkpoint_dir'])
+    train(gnn, data, split_idx, optimizer, loss_fn, cfg['epochs'], cfg['best_checkpoint_dir'], cfg['checkpoint_dir'])
 
     checkpoint = torch.load(cfg['best_checkpoint_dir'], map_location=DEVICE)
     train_history = checkpoint["train_history"]
@@ -111,7 +111,7 @@ def train_gcn():
     plot_history(train_history, val_history, acc_history)
 
 def train_sage():
-    graph, split_idx = load_dataset(gnn=True)
+    data, split_idx = load_dataset(gnn=True)
 
     # Select a config path only, other arguments are automatically derived
     config_path = "configs/sage_baseline.yaml"
@@ -122,7 +122,7 @@ def train_sage():
     print("num params:", num_params(gnn))
     optimizer = torch.optim.Adam(gnn.parameters(), lr=cfg['lr'])
     loss_fn = torch.nn.CrossEntropyLoss()
-    train(gnn, graph, split_idx, optimizer, loss_fn, cfg['epochs'], cfg['best_checkpoint_dir'], cfg['checkpoint_dir'])
+    train(gnn, data, split_idx, optimizer, loss_fn, cfg['epochs'], cfg['best_checkpoint_dir'], cfg['checkpoint_dir'])
 
     checkpoint = torch.load(cfg['best_checkpoint_dir'], map_location=DEVICE)
     train_history = checkpoint["train_history"]
@@ -131,7 +131,7 @@ def train_sage():
     plot_history(train_history, val_history, acc_history)
 
 def train_gat():
-    graph, split_idx = load_dataset(gnn=True)
+    data, split_idx = load_dataset(gnn=True)
 
     # Select a config path only, other arguments are automatically derived
     config_path = "configs/gat_baseline.yaml"
@@ -142,7 +142,7 @@ def train_gat():
     print("num params:", num_params(gat))
     optimizer = torch.optim.Adam(gat.parameters(), lr=cfg['lr'])
     loss_fn = torch.nn.CrossEntropyLoss()
-    train(gat, graph, split_idx, optimizer, loss_fn, cfg['epochs'], cfg['best_checkpoint_dir'], cfg['checkpoint_dir'])
+    train(gat, data, split_idx, optimizer, loss_fn, cfg['epochs'], cfg['best_checkpoint_dir'], cfg['checkpoint_dir'])
 
     checkpoint = torch.load(cfg['best_checkpoint_dir'], map_location=DEVICE)
     train_history = checkpoint["train_history"]

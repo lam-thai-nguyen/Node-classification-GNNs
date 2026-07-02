@@ -2,4 +2,4 @@ from .mlp import MLP
 from .gcn import GCN
 from .graphsage import GraphSAGE
 from .gat import GAT
-from .gtnet import GTCN, GTCNConv
+from .gtcn import GTCN, GTCNConv

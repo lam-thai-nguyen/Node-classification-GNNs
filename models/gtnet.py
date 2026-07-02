@@ -4,52 +4,56 @@ from torch_geometric.nn import MessagePassing
 
 
 class GTCNConv(MessagePassing):
+    """
+    The GTCNConv layer is a custom PyG MessagePassing-inherited class.
+    This layer doesn't introduce any weights. For hidden feature of node v (h_v), 
+    GTCNConv aggregating its neighbors' output hidden features from the previous propagation layer and its own initial feature.
+    Template used: https://pytorch-geometric.readthedocs.io/en/2.6.0/tutorial/create_gnn.html#implementing-the-gcn-layer
+    """
     def __init__(self):
         super().__init__(aggr='add')
 
-    def forward(self, h, z, edge_index):
+    def forward(self, H, Z, edge_index):
         """
         Args:
-            h: previous node embeddings (N,F)
-            z: MLP(x) where x is initial embedding (N,F)
+            H: previous node embeddings (N,F)
+            Z: MLP(x) where x is initial embedding (N,F)
             edge_index: edge list (2,E)
 
         Returns:
-            (N.F): new embedding - equation (8) from the paper
+            (N,F): new embedding - equation (9) from the paper
         """
-        edge_index, _ = add_self_loops(edge_index, num_nodes=h.size(0))  # (2,E) -> (2,E+N)
+        # add self-loops
+        edge_index, _ = add_self_loops(edge_index, num_nodes=H.size(0))  # (2,E) -> (2,E+N)
 
-        row, col = edge_index  # row is source nodes (E+N,), col is dst nodes (E+N,)
-        deg = degree(row, h.size(0), dtype=h.dtype)
+        # compute normalization
+        row, col = edge_index  # row is source nodes, col is dst nodes, both are (E+N,)
+        deg = degree(col, H.size(0), dtype=H.dtype)
         deg_inv_sqrt = deg.pow(-0.5)
-        norm = deg_inv_sqrt[row] * deg_inv_sqrt[col]
+        norm = deg_inv_sqrt[row] * deg_inv_sqrt[col]  # (E+N,)
 
-        # look at eq (8) from paper
-        # currently, A_uu is non-zero, so a part of the current node's previous embedding is used (which is unwanted)
-        # we set A_uu to zero first, so the current node's previous embedding is not used
-        # later, we set A_uu back to use z for aggregation
-        self_loop_mask = row == col
-        norm_h = norm.clone()
-        norm_h[self_loop_mask] = 0.0
-
-        out = self.propagate(edge_index, x=h, norm=norm_h)
-
-        # we set A_uu back to use z for aggregation
-        A_uu = norm[self_loop_mask]  # assumes no self-loops in the original edge_index (fragile but usable for OGBN-ARXIV)
-        out = out + A_uu.unsqueeze(-1) * z
+        # get A1 and A2 in equation (9)
+        self_loop_mask = row == col  # (E+N,)
+        A2 = norm[self_loop_mask]  # (N,) -- A2[i] = A[i,i]
+        A1 = norm[~self_loop_mask]  # (E,)
+        A1_edge_index = edge_index[:, ~self_loop_mask]  # (2,E) -- the original edge index without added self-loops
+        
+        # propagating messages
+        out = self.propagate(A1_edge_index, x=H, norm=A1)  # (N,F)
+        out = out + A2.view(-1, 1) * Z  # (N,F) + (N,1)*(N,F)
 
         return out
 
     def message(self, x_j, norm):
         """
         Args:
-            x_j: features of source node for each edge (E+N,F)
-            norm: the normalization weights (norm_h) (E+N,)
+            x_j: features of source node for each edge (E,F)
+            norm: normalization (E,)
 
         Returns:
-            MSG (E+N,F): one message for each edge
+            MSG (E,F): one message for each edge
         """
-        return norm.view(-1, 1) * x_j
+        return norm.view(-1, 1) * x_j  # (E,1) * (E,F) (element-wise mul.)
 
 class GTCN(nn.Module):
     def __init__(self, in_channels=128, out_channels=40, hidden_channels=256, num_layers=5, dropout=0.2):

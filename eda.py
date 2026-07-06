@@ -119,8 +119,8 @@ if __name__ == "__main__":
     data, split_idx = load_dataset()
 
     edge_index = data.edge_index.numpy()
-    x = data.x
-    y = data.y.flatten()
+    x = data.x.numpy()
+    y = data.y.numpy().flatten()
     node_year = data.node_year.numpy().flatten()
     num_nodes = data.num_nodes
 

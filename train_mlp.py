@@ -133,11 +133,11 @@ if __name__ == "__main__":
     data, split_idx = load_dataset()
 
     # Select a config path only, other arguments are automatically derived
-    config_path = "configs/mlp_baseline.yaml"
+    config_path = "configs/baseline/mlp.yaml"
     with open(config_path) as f:
         cfg = yaml.safe_load(f)
 
-    mlp = MLP(cfg['in_channels'], cfg['out_channels'], cfg['d_model'], cfg['layers'], cfg['dropout'])
+    mlp = MLP(cfg['in_channels'], cfg['out_channels'], cfg['hidden_channels'], cfg['layers'], cfg['dropout'])
     print("num params:", num_params(mlp))
     optimizer = torch.optim.Adam(mlp.parameters(), lr=cfg['lr'])
     loss_fn = torch.nn.CrossEntropyLoss()

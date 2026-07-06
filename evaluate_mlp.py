@@ -2,7 +2,7 @@ import yaml
 import torch
 from ogb.nodeproppred import Evaluator
 from models import MLP
-from utils import num_params, load_dataset, tnse
+from utils import num_params, load_dataset, tsne
 
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -54,4 +54,4 @@ if __name__ == "__main__":
     train_acc, valid_acc, test_acc = evaluate(mlp, data.x, data.y, split_idx)
     print(f"train accuracy {train_acc*100:.2f}%\t val accuracy {valid_acc*100:.2f}%\t test accuracy {test_acc*100:.2f}%\t")
 
-    tnse(mlp, 1, data, 100)
+    tsne(mlp, 1, data, 100)

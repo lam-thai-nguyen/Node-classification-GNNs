@@ -57,7 +57,7 @@ def load_dataset(gnn=False):
 
     return data, split_idx
 
-def tnse(model, return_layer, data, subsample=10000):
+def tsne(model, return_layer, data, subsample=10000):
     """
     Args:
         model: your model

@@ -16,12 +16,14 @@ class MLP(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         self.dropout = nn.Dropout(p=dropout)
 
-    def forward(self, x):
-        for linear_layer, bn_layer in zip(self.linear_layers, self.bn_layers):
-            x = linear_layer(x)
-            x = bn_layer(x)
+    def forward(self, x, return_layer=None):
+        for i, (lin, bn) in enumerate(zip(self.linear_layers, self.bn_layers)):
+            x = lin(x)
+            x = bn(x)
             x = self.relu(x)
             x = self.dropout(x)
+            if return_layer == i:
+                return x
         logits = self.classifier(x)
         return logits
     

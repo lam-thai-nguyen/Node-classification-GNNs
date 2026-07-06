@@ -3,6 +3,8 @@ from sklearn.preprocessing import StandardScaler
 from ogb.nodeproppred import PygNodePropPredDataset
 from torch_geometric.utils import to_undirected
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.manifold import TSNE
 plt.rcParams['font.family'] = 'Times New Roman'
 plt.rcParams['font.size'] = 14
 
@@ -54,3 +56,29 @@ def load_dataset(gnn=False):
         # skip removing self-loops because a citation network can't have self-loops
 
     return data, split_idx
+
+def tnse(model, return_layer, data, subsample=10000):
+    """
+    Args:
+        model: your model
+        return_layer: which layer should return embeddings. starting from 0.
+        data: your graph
+    """
+    import os
+    os.environ["LOKY_MAX_CPU_COUNT"] = "6"
+    
+    model = model.to("cpu")
+    model.eval()
+    with torch.no_grad():
+        out = model(data.x, return_layer).numpy()
+        print("node embedding shape:", out.shape)
+    
+    np.random.seed(42)
+    idx = np.random.choice(data.num_nodes, subsample, replace=False)
+    tsne = TSNE(n_components=2, init='pca', random_state=42).fit_transform(out[idx])
+
+    plt.figure(figsize=(7,6))
+    sc = plt.scatter(tsne[:,0], tsne[:,1], c=data.y[idx], cmap='tab20', s=5, alpha=0.7)
+    plt.colorbar(sc, label='Class')
+    plt.savefig(f"tsne_{return_layer}.jpg", dpi=300, bbox_inches="tight")
+    print(f"✅ Saved tsne_{return_layer}.jpg")

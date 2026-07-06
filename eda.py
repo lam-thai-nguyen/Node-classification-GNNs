@@ -90,8 +90,9 @@ def tsne(subsample, num_nodes):
 
     assert subsample <= num_nodes, "choose subsample <= num_nodes"
 
+    np.random.seed(42)
     idx = np.random.choice(num_nodes, subsample, replace=False)
-    tsne = TSNE(n_components=2).fit_transform(x[idx])
+    tsne = TSNE(n_components=2, init='pca', random_state=42).fit_transform(x[idx])
 
     plt.figure(figsize=(7,6))
     sc = plt.scatter(tsne[:,0], tsne[:,1], c=y[idx], cmap='tab20', s=5, alpha=0.7)
@@ -118,8 +119,8 @@ if __name__ == "__main__":
     data, split_idx = load_dataset()
 
     edge_index = data.edge_index.numpy()
-    x = data.x.numpy()
-    y = data.y.numpy().flatten()
+    x = data.x
+    y = data.y.flatten()
     node_year = data.node_year.numpy().flatten()
     num_nodes = data.num_nodes
 

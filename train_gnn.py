@@ -92,11 +92,11 @@ def train_gcn():
     data, split_idx = load_dataset(gnn=True)
 
     # Select a config path only, other arguments are automatically derived
-    config_path = "configs/gcn_baseline.yaml"
+    config_path = "configs/baseline/gcn.yaml"
     with open(config_path) as f:
         cfg = yaml.safe_load(f)
 
-    gnn = GCN(cfg['in_channels'], cfg['out_channels'], cfg['d_model'], cfg['layers'], cfg['dropout'])
+    gnn = GCN(cfg['in_channels'], cfg['out_channels'], cfg['hidden_channels'], cfg['layers'], cfg['dropout'], cfg['skip'], cfg['mlp'])
     print("num params:", num_params(gnn))
     optimizer = torch.optim.Adam(gnn.parameters(), lr=cfg['lr'])
     loss_fn = torch.nn.CrossEntropyLoss()
@@ -112,11 +112,11 @@ def train_sage():
     data, split_idx = load_dataset(gnn=True)
 
     # Select a config path only, other arguments are automatically derived
-    config_path = "configs/sage_baseline.yaml"
+    config_path = "configs/baseline/graphsage.yaml"
     with open(config_path) as f:
         cfg = yaml.safe_load(f)
 
-    gnn = GraphSAGE(cfg['in_channels'], cfg['out_channels'], cfg['d_model'], cfg['layers'], cfg['dropout'], cfg['aggr'])
+    gnn = GraphSAGE(cfg['in_channels'], cfg['out_channels'], cfg['hidden_channels'], cfg['layers'], cfg['dropout'], cfg['aggr'], cfg['skip'], cfg['mlp'])
     print("num params:", num_params(gnn))
     optimizer = torch.optim.Adam(gnn.parameters(), lr=cfg['lr'])
     loss_fn = torch.nn.CrossEntropyLoss()
@@ -132,11 +132,11 @@ def train_gat():
     data, split_idx = load_dataset(gnn=True)
 
     # Select a config path only, other arguments are automatically derived
-    config_path = "configs/gat_baseline.yaml"
+    config_path = "configs/baseline/gat.yaml"
     with open(config_path) as f:
         cfg = yaml.safe_load(f)
 
-    gat = GAT(cfg['in_channels'], cfg['out_channels'], cfg['d_model'], cfg['heads'], cfg['layers'], cfg['dropout'])
+    gat = GAT(cfg['in_channels'], cfg['out_channels'], cfg['hidden_channels'], cfg['layers'], cfg['dropout'], cfg['skip'], cfg['mlp'])
     print("num params:", num_params(gat))
     optimizer = torch.optim.Adam(gat.parameters(), lr=cfg['lr'])
     loss_fn = torch.nn.CrossEntropyLoss()
@@ -152,11 +152,11 @@ def train_gtcn():
     data, split_idx = load_dataset(gnn=True)
 
     # Select a config path only, other arguments are automatically derived
-    config_path = "configs/gtcn_baseline.yaml"
+    config_path = "configs/baseline/gtcn.yaml"
     with open(config_path) as f:
         cfg = yaml.safe_load(f)
 
-    gtcn = GTCN(cfg['in_channels'], cfg['out_channels'], cfg['d_model'], cfg['layers'], cfg['dropout'])
+    gtcn = GTCN(cfg['in_channels'], cfg['out_channels'], cfg['hidden_channels'], cfg['layers'], cfg['dropout'])
     print("num params:", num_params(gtcn))
     optimizer = torch.optim.Adam(gtcn.parameters(), lr=cfg['lr'], weight_decay=cfg['weight_decay'])
     loss_fn = torch.nn.CrossEntropyLoss()
@@ -169,7 +169,7 @@ def train_gtcn():
     plot_history(train_history, val_history, acc_history)
 
 if __name__ == "__main__":
-    # train_gcn()
+    train_gcn()
     # train_sage()
     # train_gat()
-    train_gtcn()
+    # train_gtcn()

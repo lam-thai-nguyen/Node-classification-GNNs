@@ -28,7 +28,7 @@ class GAT(nn.Module):
         # GNN stack
         self.conv_layers = nn.ModuleList()
         self.bn_layers = nn.ModuleList()
-        self.conv_layers.append(GATConv(in_channels, hidden_channels, heads=1, concat=True, dropout=dropout))
+        self.conv_layers.append(GATConv(gnn_in_channels, hidden_channels, heads=1, concat=True, dropout=dropout))
         self.bn_layers.append(nn.BatchNorm1d(hidden_channels))
         for _ in range(num_layers-2):
             self.conv_layers.append(GATConv(hidden_channels, hidden_channels, heads=1, concat=True, dropout=dropout))

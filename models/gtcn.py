@@ -81,15 +81,17 @@ class GTCN(nn.Module):
         A1_edge_index = edge_index[:, ~self_loop_mask]
         return A1_edge_index, A1, A2
 
-    def forward(self, x, edge_index):
+    def forward(self, x, edge_index, return_layer=None):
         A1_edge_index, A1, A2 = self._precompute_norm(edge_index, x.shape[0], x.dtype)
         
         z = self.relu(self.mlp1(self.dropout(x)))
         z = self.mlp2(self.dropout(z))
         h = z
-        for conv, bn in zip(self.convs, self.bns):
+        for i, (conv, bn) in enumerate(zip(self.convs, self.bns)):
             h = conv(h, z, A1_edge_index, A1, A2)
             h = bn(h)
+            if return_layer == i:
+                return x
 
         h = self.dropout(self.relu(h))
         logits = self.classifier(h)

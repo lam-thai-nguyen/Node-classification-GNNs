@@ -9,15 +9,15 @@ The mentioned Kaggle notebook can be found [[here]](https://www.kaggle.com/code/
 | URL | Description | Based on |
 |---|---|---|
 https://www.kaggle.com/code/thaimeuu/it5429e-workspace | Experiments (outputs, which are used in the reported, are saved in this notebook) | Independent |
-| https://www.kaggle.com/code/thaimeuu/graph-ml-it5429e-models | All models | [models/](./models/) |
+| https://www.kaggle.com/code/thaimeuu/graph-ml-it5429e-models | All models | [models/](models/) |
 | https://www.kaggle.com/code/thaimeuu/graph-ml-it5429e-learning | Training and evaluation functions | Independent |
-| https://www.kaggle.com/code/thaimeuu/graph-ml-it5429e-utils | Utils functions | [utils.py](./utils.py) |
+| https://www.kaggle.com/code/thaimeuu/graph-ml-it5429e-utils | Utils functions | [utils.py](utils.py) |
 
-The figures for OGBN-ARXIV in the report can be found here: [images/](.images/)
+The figures for OGBN-ARXIV in the report can be found here: [images/](images/)
 
 The figures for the experiments can be found [in this Kaggle notebook](https://www.kaggle.com/code/thaimeuu/it5429e-workspace)
 
-The checkpoints for the experiments can be found here: [checkpoints/](.checkpoints/)
+The checkpoints for the experiments can be found here: [checkpoints/](checkpoints/)
 
 | File | Description | Section in report |
 |---|---|---|

@@ -8,10 +8,28 @@ plt.rcParams['font.size'] = 14
 
 
 def num_params(model):
+    """
+    Calculate the number of parameters of a model
+
+    Args:
+        model (nn.Module): the model
+
+    Returns:
+        params (int): number of parameters
+    """
     params = sum(p.numel() for p in model.parameters())
     return params
 
 def plot_history(train_history, val_history, acc_history):
+    """
+    Plots and saves two figures: train-valid loss and valid accuracy
+
+    Args:
+        train_history, val_history, acc_history (list): these are outputs from your train() function
+    
+    Returns:
+        None
+    """
     epochs = range(1, len(train_history) + 1)
 
     # Figure 1: train vs val loss
@@ -38,8 +56,13 @@ def plot_history(train_history, val_history, acc_history):
 
 def load_dataset(gnn=False):
     """
+    Loads OGBN-ARXIV
+
     Args:
         gnn (bool): Whether you are loading for a GNN model or not. Default to False.
+
+    Returns:
+        data, split_idx: the graph and its split indices
     """
     dataset = PygNodePropPredDataset(name='ogbn-arxiv') 
 
